@@ -13,14 +13,25 @@ export const requests = [
 ];
 const root = fileURLToPath(new URL('./public/', import.meta.url));
 const files = { '/': ['index.html', 'text/html'], '/app.js': ['app.js', 'text/javascript'], '/styles.css': ['styles.css', 'text/css'] };
+export function filterRequests(items, { q = '', status = '' } = {}) {
+  const query = q.trim().toLowerCase();
+  return items.filter(item => (!status || item.status === status) &&
+    (!query || [item.title, item.description, item.app].some(value => value.toLowerCase().includes(query))));
+}
 export function createServer() {
   return http.createServer(async (req, res) => {
     try {
       const url = new URL(req.url, 'http://localhost');
       if (req.method !== 'GET') { res.writeHead(405, { Allow: 'GET' }); return res.end(); }
       if (url.pathname === '/api/requests') {
+        const status = url.searchParams.get('status') || '';
+        if (status && !['Planned', 'In progress', 'Review', 'Done'].includes(status)) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ error: 'Invalid status' }));
+        }
+        const items = filterRequests(requests, { q: url.searchParams.get('q') || '', status });
         res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
-        return res.end(JSON.stringify({ items: requests, total: requests.length }));
+        return res.end(JSON.stringify({ items, total: items.length }));
       }
       const file = files[url.pathname];
       if (!file) { res.writeHead(404); return res.end('Not found'); }

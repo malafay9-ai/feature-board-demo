@@ -19,3 +19,19 @@ test('serves app and rejects missing routes and writes', () => withServer(async 
   assert.equal((await fetch(`${base}/missing`)).status, 404);
   assert.equal((await fetch(`${base}/api/requests`, {method:'POST'})).status, 405);
 }));
+
+test('search is case insensitive, trims spaces and searches app names', () => withServer(async base => {
+  const data = await (await fetch(`${base}/api/requests?q=%20ANALYTICS%20`)).json();
+  assert.equal(data.total, 2);
+  assert.ok(data.items.every(item => item.app === 'Analytics'));
+}));
+test('combines search and status filters', () => withServer(async base => {
+  const data = await (await fetch(`${base}/api/requests?q=api&status=Done`)).json();
+  assert.equal(data.total, 1);
+  assert.equal(data.items[0].id, 6);
+}));
+test('returns empty results and rejects invalid status', () => withServer(async base => {
+  const data = await (await fetch(`${base}/api/requests?q=nonexistent`)).json();
+  assert.deepEqual(data, { items: [], total: 0 });
+  assert.equal((await fetch(`${base}/api/requests?status=Unknown`)).status, 400);
+}));

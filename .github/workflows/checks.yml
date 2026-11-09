@@ -1,0 +1,20 @@
+name: Tests and screenshots
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm test
+      - run: npm install --no-save --package-lock=false playwright@1.56.1
+      - run: npx playwright install --with-deps chromium
+      - run: node scripts/verify-ui.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: board-screenshots
+          path: screenshots/

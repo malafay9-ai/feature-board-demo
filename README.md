@@ -24,3 +24,9 @@ Data is in memory. There is no authentication, persistence or editing. This is n
 ## Review workflow
 
 The sample feature branch adds search and status filtering. Its PR documents behavior and verification. AI-assisted sample prepared with ChatGPT/Codex; no claim of Claude Code usage.
+
+## Search/filter sample PR
+
+Submit a search for a title, description or application, optionally combined with a status. Clear resets both fields. Unknown status values return HTTP 400. Empty matches display empty columns, and stale fetch responses cannot replace newer results.
+
+`npm test` covers all six requests, combined filters, case/whitespace normalization, empty results, invalid statuses and route/method handling. The GitHub Actions workflow also checks the browser flow and uploads desktop, filtered and mobile screenshots. Browser checks need the optional Playwright package; the app itself has no dependencies.
