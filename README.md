@@ -1,32 +1,37 @@
 # Feature Board
 
-A small portfolio demo of a feature-request workspace. Built with browser JavaScript, CSS and a Node.js HTTP API. This is sample work, not a previous client project.
+A responsive feature-request workspace with a Node.js HTTP API and browser JavaScript. A portfolio demo using fictional data.
 
-## Run locally
+**[Review the search/filter PR](https://github.com/malafay9-ai/feature-board-demo/pull/1)** · **[See passing checks](https://github.com/malafay9-ai/feature-board-demo/actions/runs/42643467442)**
 
-Requires Node.js 22 or newer. No dependencies or install step needed.
+![Feature Board preview](https://raw.githubusercontent.com/malafay9-ai/feature-board-demo/a163e1fb167f78605a187f58d234346aefa0be8c/docs/desktop.png)
+
+## Explore the feature
+
+The `main` branch contains the baseline board. The open PR adds search and status filters, including combined queries, an empty state, a Clear button and protection against stale responses.
+
+To run the feature locally:
 
 ```sh
+git clone https://github.com/malafay9-ai/feature-board-demo.git
+cd feature-board-demo
+git switch feature/search-and-status-filters
 npm start
 ```
 
-Open http://127.0.0.1:3000. Run `npm test` for API integration tests.
+Requires Node.js 22 or newer. Open http://127.0.0.1:3000. The application has no dependencies or install step. Run `npm test` for API integration tests.
+
+## What is included
+
+| Area | Details |
+| --- | --- |
+| Interface | Four status columns, responsive layout, labelled controls |
+| API | Read-only requests endpoint; search and validated status filters in the PR |
+| Tests | 5 API integration tests; browser flow, error checks and mobile overflow checks |
+| Evidence | Desktop, filtered and mobile screenshots in the PR |
 
 ## Scope
 
-- Responsive board grouped by status
-- Six fictional requests across three applications
-- Read-only JSON API at `/api/requests`
-- Loading and failure states; text rendered without HTML injection
+This is sample work, not a previous client project. Data is in memory, with no authentication, persistence or editing. The app is a focused demonstration rather than a production task-management service.
 
-Data is in memory. There is no authentication, persistence or editing. This is not a production task-management service.
-
-## Review workflow
-
-The sample feature branch adds search and status filtering. Its PR documents behavior and verification. AI-assisted sample prepared with ChatGPT/Codex; no claim of Claude Code usage.
-
-## Search/filter sample PR
-
-Submit a search for a title, description or application, optionally combined with a status. Clear resets both fields. Unknown status values return HTTP 400. Empty matches display empty columns, and stale fetch responses cannot replace newer results.
-
-`npm test` covers all six requests, combined filters, case/whitespace normalization, empty results, invalid statuses and route/method handling. The GitHub Actions workflow also checks the browser flow and uploads desktop, filtered and mobile screenshots. Browser checks need the optional Playwright package; the app itself has no dependencies.
+Prepared with ChatGPT/Codex assistance. Claude Code was not used.
