@@ -9,7 +9,7 @@ function text(tag, value, className) {
 }
 export function render(items) {
   board.replaceChildren();
-  count.textContent = `${items.length} requests`;
+  count.textContent = `${items.length} ${items.length === 1 ? 'request' : 'requests'}`;
   for (const status of statuses) {
     const column = text('section', '', 'column');
     const matches = items.filter(item => item.status === status);
@@ -23,16 +23,29 @@ export function render(items) {
     board.append(column);
   }
 }
-async function load() {
+let sequence = 0;
+async function load(params = new URLSearchParams()) {
+  const current = ++sequence;
+  board.setAttribute('aria-busy', 'true');
+  document.querySelector('#error').hidden = true;
   try {
-    const response = await fetch('/api/requests');
+    const response = await fetch(`/api/requests?${params}`);
     if (!response.ok) throw new Error('Could not load requests');
-    render((await response.json()).items);
+    const data = await response.json();
+    if (current !== sequence) return;
+    render(data.items);
   } catch {
+    if (current !== sequence) return;
     board.replaceChildren();
     const error = document.querySelector('#error');
     error.textContent = 'Could not load requests. Please refresh to try again.';
     error.hidden = false;
-  } finally { board.setAttribute('aria-busy', 'false'); }
+  } finally { if (current === sequence) board.setAttribute('aria-busy', 'false'); }
 }
+const form = document.querySelector('#filters');
+form.addEventListener('submit', event => {
+  event.preventDefault();
+  load(new URLSearchParams(new FormData(form)));
+});
+document.querySelector('#clear').addEventListener('click', () => { form.reset(); load(); });
 load();
