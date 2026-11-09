@@ -9,7 +9,7 @@ function text(tag, value, className) {
 }
 export function render(items) {
   board.replaceChildren();
-  count.textContent = `${items.length} requests`;
+  count.textContent = `${items.length} ${items.length === 1 ? 'request' : 'requests'}`;
   for (const status of statuses) {
     const column = text('section', '', 'column');
     const matches = items.filter(item => item.status === status);

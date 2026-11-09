@@ -16,7 +16,7 @@ try {
   await page.getByLabel('Search requests', {exact:true}).fill('api');
   await page.getByLabel('Status', {exact:true}).selectOption('Done');
   await page.getByRole('button', {name:'Apply filters',exact:true}).click();
-  await page.waitForFunction(() => document.querySelector('#count').textContent === '1 requests');
+  await page.waitForFunction(() => document.querySelector('#count').textContent === '1 request');
   assert.equal(await page.locator('.card').count(), 1);
   assert.match(await page.locator('.card').innerText(), /Document API pagination/);
   await page.screenshot({ path: 'screenshots/filtered.png', fullPage: true });
